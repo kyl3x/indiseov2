@@ -16,7 +16,7 @@ def ai(request):
         url = request.POST['url']
         # Call OpenAI API to generate the product description using the URL
         # Replace YOUR_OPENAI_API_KEY with your actual OpenAI API key
-        openai.api_key = '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'
+        openai.api_key = ''
         response = openai.Completion.create(
             engine='text-davinci-003',
             prompt=f"Generate a product description for the URL: {url}.",
