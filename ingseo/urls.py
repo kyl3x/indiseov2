@@ -22,6 +22,5 @@ from main import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index, name='index'),
-    path('main/',include ('main.urls')),
-    path('inner-page.html',views.inner, name='inner'),
+    path('app/', include('main.urls')),
 ]
