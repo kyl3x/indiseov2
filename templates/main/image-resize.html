@@ -23,9 +23,21 @@
           <h1>Resize Image</h1>
                 <p>Enter an Image URL to download a resized, compressed version.</p>
                   <form method="post">
-                      {% csrf_token %}
-                      <label for="image_url">Image URL:</label>
-                      <input type="text" id="image_url" name="image_url" required>
+                     <div class="form-group">
+                        {% csrf_token %}
+                        <label for="image_url">Image URL:</label>
+                        <input type="text" id="image_url" name="image_url" required>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <label for="width">Width:</label>
+                          <input type="text" class="form-control" value="600" name="width" >
+                        </div>
+                        <div class="col">
+                          <label for="width">Height:</label>
+                          <input type="text" class="form-control" value="600" name="height">
+                        </div>
+                      </div>
                       <br><br>
                       <input type="submit" value="Resize">
                   </form>

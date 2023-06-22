@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from PIL import Image
 import requests
 from io import BytesIO
@@ -34,31 +34,36 @@ def ai(request):
     else:
         return render(request, 'main/ai.html')
 
-# def upload(request):
-#     if request.method == 'POST':
-#         # Retrieve the uploaded image from the form
-#         uploaded_file = request.FILES['image']
+def image_resize(request):
+    if request.method == 'POST':
+        try:
+            image_url = request.POST.get('image_url')  # Get the image URL from the form input
+            width = int(request.POST.get('width'))  # Get the desired width from the form input
+            height = int(request.POST.get('height'))  # Get the desired height from the form input
+            
+            # Download the image from the URL
+            response = requests.get(image_url)
+            response.raise_for_status()  # Check if the request was successful
+            
+            # Open the downloaded image
+            img = Image.open(BytesIO(response.content))
+            
+            # Resize the image
+            img.thumbnail((width, height))
+            
+            # Save the resized image
+            resized_image_path = 'resized_image.jpg'  # Choose a filename and extension for the resized image
+            img.save(resized_image_path, optimize=True, quality=40)
+            
+            # Serve the resized image for download
+            file_response = FileResponse(open(resized_image_path, 'rb'))
+            file_response['Content-Disposition'] = 'attachment; filename="resized_image.jpg"'
+            return file_response
         
-#         # Download the image from the URL
-#         response = requests.get(image_url)
-#         img = Image.open(BytesIO(response.content))
-        
-#         # Resize the image
-#         img = Image.open(image_path)
-#         img.thumbnail((600, 600))
-        
-#         # Save the resized image
-#         resized_image_path = 'resized_image.jpg'  # Choose a filename and extension for the resized image
-#         img.save(resized_image_path, optimize=True, quality=40)
-        
-#         # Pass the paths of the original and resized images to the template
-#         context = {
-#             'original_image_path': image_path,
-#             'resized_image_path': resized_image_path,
-#         }
-#         return render(request, 'main/result.html', context)
-
-#     return render(request, 'main/upload.html')
+        except (KeyError, requests.exceptions.RequestException, ValueError):
+            return HttpResponseServerError("Failed to download and resize the image.")
+    
+    return render(request, 'main/image-resize.html')
 
 # def inner(request):
 #     return render(request,'main/inner-page.html')
