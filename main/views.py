@@ -5,12 +5,18 @@ import requests
 from io import BytesIO
 import openai
 import csv
-
+import pandas as pd
+import re
+import io
+from fuzzywuzzy import fuzz, process
+from django.http import JsonResponse
+import tempfile
 # Create your views here.
 
 def index(request):
 	return render(request,'main/index.html')
 
+## OPENAI ##
 def ai(request):
     if request.method == 'POST':
         url = request.POST['url']
@@ -34,6 +40,8 @@ def ai(request):
     else:
         return render(request, 'main/ai.html')
 
+
+## IMAGE RESIZER ##
 def image_resize(request):
     if request.method == 'POST':
         try:
@@ -68,6 +76,7 @@ def image_resize(request):
 # def inner(request):
 #     return render(request,'main/inner-page.html')
 
+## XML Sitemap Generator ##
 def generate_sitemap(file_path):
     # Read the hreflang information from the CSV file
     hreflang_dict = {}
@@ -111,3 +120,106 @@ def upload_csv(request):
             response['Content-Disposition'] = 'attachment; filename=sitemap.xml'
             return response
     return render(request, 'main/xml.html')
+
+## REDIRECT BUILDER ##
+# create dataframe from the CSV file
+def read_csv(file):
+    print('Reading CSV...')
+    df = pd.read_csv(file, encoding='utf-8-sig')
+    df = df.astype(str)  # Convert all columns to string type
+    return df
+
+### Comment out preprocessing rules that are not required for each column
+
+def preprocess_url1(url):
+    # Preprocessing rules for the (source) first column
+    #url = url.lower()  # force lowercase
+    url = re.sub(r'^https?://', '', url)  # strips out protocol
+    url = re.sub(r'^www\.', '', url)  # strips out www.
+    url = re.sub(r'^https?://(www\.)?', '', url)  # strips out protocol and www.
+    url = re.sub(r'^https?://[^/]+', '', url)  # remove domain name including protocol
+    url = re.sub(r'\?.*$', '', url)  # removes parameters and querystrings
+    # url = re.sub(r'/$', '', url) # removes trailing slash
+    url = re.sub(r'\.(php|htm|html|asp)$', '', url)  # remove file extensions
+    url = re.sub(r'\.(css|json|js)$', '', url)  # remove asset files
+    url = re.sub(r'\.(webp|png|jpe?g|gif|bmp|svg|tiff?)$', '', url)  # remove image formats
+    url = re.sub(
+        r'\.(pdf|docx?|csv|xlsx?|pptx?|zip|rar|tar|gz|7z|mp3|wav|ogg|avi|mp4|mov|mkv|flv|wmv)$', '', url
+    )  # Remove common download formats
+    print('Preprocessing Source...')
+    return url
+
+
+def preprocess_url2(url):
+    # Preprocessing rules for the (destination) second column
+    url = url.lower()  # force lowercase
+    url = re.sub(r'^https?://', '', url)  # strips out protocol
+    url = re.sub(r'^www\.', '', url)  # strips out www.
+    url = re.sub(r'^https?://(www\.)?', '', url)  # strips out protocol and www.
+    url = re.sub(r'^https?://[^/]+', '', url)  # remove domain name including protocol
+    url = re.sub(r'\?.*$', '', url)  # removes parameters and querystrings
+    # url = re.sub(r'/$', '', url) # removes trailing slash
+    url = re.sub(r'\.(php|htm|html|asp)$', '', url)  # remove file extensions
+    url = re.sub(r'\.(css|json|js)$', '', url)  # remove asset files
+    url = re.sub(r'\.(webp|png|jpe?g|gif|bmp|svg|tiff?)$', '', url)  # remove image formats
+    url = re.sub(
+        r'\.(pdf|docx?|csv|xlsx?|pptx?|zip|rar|tar|gz|7z|mp3|wav|ogg|avi|mp4|mov|mkv|flv|wmv)$', '', url
+    )  # Remove common download formats
+    url = re.sub(r'\?(page|pagenumber|start)=[^&]*(&|$)', '', url)  # ignore pagination URLs
+    print('Preprocessing Destination...')
+    return url
+
+
+def get_best_match(url, url_list):
+    print('Fuzzying URL...')
+    scorers = [fuzz.token_sort_ratio, fuzz.token_set_ratio, fuzz.partial_token_sort_ratio]
+    best_match_data = max(
+        (process.extractOne(url, url_list, scorer=scorer) for scorer in scorers), key=lambda x: x[1]
+    )
+    best_match, best_score = best_match_data[0], best_match_data[1]
+    print('URL Fuzzed...')
+    return best_match, best_score
+
+
+# threshold score is set at 60. URLs that do not meet threshold will need to be manually mapped
+def compare_urls(df, column1, column2, threshold=60):
+    result = []
+    print('Adding more fuzz...')
+    preprocessed_url1_list = [preprocess_url1(url) for url in df[column1]]
+    preprocessed_url2_list = [preprocess_url2(url) for url in df[column2]]
+
+    for url, preprocessed_url1 in zip(df[column1], preprocessed_url1_list):
+        best_match, best_score = get_best_match(preprocessed_url1, preprocessed_url2_list)
+
+        if best_score < threshold:
+            best_match = 'No Match'
+
+        result.append({'Source URL': url, 'Best Match Destination URL': best_match, 'Match Score': best_score})
+    print('Fuzzy finished')
+    return result
+
+
+def compare_urls_in_csv(file, column1, column2):
+    df = read_csv(file)
+    result = compare_urls(df, column1, column2)
+    result_df = pd.DataFrame(result)
+    result_csv = result_df.to_csv(index=False)  # Convert DataFrame to CSV string
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="result.csv"'
+
+    # Write the CSV string as the response content
+    response.write(result_csv)
+    return response
+
+
+def redirect_builder_view(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        if file:
+            file_content = file.read().decode('utf-8')
+            csv_data = io.StringIO(file_content)
+            response = compare_urls_in_csv(csv_data, "source", "destination")
+            return response
+    return render(request, 'main/redirect-builder.html')
+
