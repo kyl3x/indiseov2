@@ -10,9 +10,9 @@
 
         <ol>
           <li><a href="index.html">Home</a></li>
-          <li>Inner Page</li>
+          <li>XML Sitemap Creator</li>
         </ol>
-        <h2>Inner Page</h2>
+        <h2>XML Sitemap Creator</h2>
 
       </div>
     </section><!-- End Breadcrumbs -->
@@ -21,7 +21,8 @@
       <div class="container">
         <p>
           <h1>XML CSV Upload</h1>
-                <p>Upload a CSV to convert to XML</p>
+                <p>Upload the FeedManager CSV to convert to XML</p>
+                <p>Note: this will not convert SKU entries to URLs.</p>
                   <form method="post" enctype="multipart/form-data">
                       {% csrf_token %}
                       <div class="form-group">
