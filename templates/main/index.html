@@ -8,7 +8,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-6 d-flex flex-column justify-content-center">
-          <h1 data-aos="fade-up">Welcome to Ingseo</h1>
+          <h1 data-aos="fade-up">Welcome to indiseo</h1>
                         <a href="#about" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
                 <span>Get Started</span>
                 <i class="bi bi-arrow-right"></i>
@@ -37,7 +37,7 @@
               <i class="bi bi-emoji-smile"></i>
               <div>
                 <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
-                <p><a href="{% url 'index' %}">XML Sitemap Generator</a></p>
+                <p><a href="{% url 'main:upload_csv' %}">XML Sitemap Generator</a></p>
               </div>
             </div>
           </div>
@@ -47,7 +47,7 @@
               <i class="bi bi-journal-richtext" style="color: #ee6c20;"></i>
               <div>
                 <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
-                <p><a href="{% url 'index' %}">AI Generator</a></p>
+                <p><a href="{% url 'main:ai' %}">AI Generator</a></p>
               </div>
             </div>
           </div>
@@ -57,7 +57,7 @@
               <i class="bi bi-headset" style="color: #15be56;"></i>
               <div>
                 <span data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1" class="purecounter"></span>
-                <p><a href="{% url 'index' %}">Image Resizer</a></p>
+                <p><a href="{% url 'main:image_resize' %}">Image Resizer</a></p>
               </div>
             </div>
           </div>
@@ -67,7 +67,7 @@
               <i class="bi bi-people" style="color: #bb0852;"></i>
               <div>
                 <span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1" class="purecounter"></span>
-                <p>URL Mapper</p>
+                <p><a href="{% url 'main:redirect-builder' %}">URL Mapper</a></p>
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@
 
       </div>
     </section><!-- End Counts Section -->
-  <!-- ======= About Section ======= -->
+ <!-- <!-- <!--  <!-- ======= About Section ======= 
     <section id="about" class="about">
 
       <div class="container" data-aos="fade-up">
@@ -99,7 +99,7 @@
 
     </section><!-- End About Section -->
 
-    <!-- ======= Values Section ======= -->
+    <!-- ======= Values Section ======= 
     <section id="values" class="values">
 
       <div class="container" data-aos="fade-up">
@@ -139,8 +139,8 @@
 
       </div>
 
-    </section><!-- End Values Section -->
-    <!-- ======= Features Section ======= -->
+    </section><!-- End Values Section 
+    <!-- ======= Features Section ======= 
     <section id="features" class="features">
 
       <div class="container" data-aos="fade-up">
@@ -204,14 +204,14 @@
             </div>
           </div>
 
-        </div> <!-- / row -->
+        </div> <!-- / row 
 
-        <!-- Feature Tabs -->
+        <!-- Feature Tabs 
         <div class="row feture-tabs" data-aos="fade-up">
           <div class="col-lg-6">
             <h3>Neque officiis dolore maiores et exercitationem quae est seda lidera pat claero</h3>
 
-            <!-- Tabs -->
+            <!-- Tabs 
             <ul class="nav nav-pills mb-3">
               <li>
                 <a class="nav-link active" data-bs-toggle="pill" href="#tab1">Saepe fuga</a>
@@ -222,9 +222,9 @@
               <li>
                 <a class="nav-link" data-bs-toggle="pill" href="#tab3">Corrupti</a>
               </li>
-            </ul><!-- End Tabs -->
+            </ul><!-- End Tabs 
 
-            <!-- Tab Content -->
+            <!-- Tab Content 
             <div class="tab-content">
 
               <div class="tab-pane fade show active" id="tab1">
@@ -239,7 +239,7 @@
                   <h4>Incidunt non veritatis illum ea ut nisi</h4>
                 </div>
                 <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
-              </div><!-- End Tab 1 Content -->
+              </div><!-- End Tab 1 Content
 
               <div class="tab-pane fade show" id="tab2">
                 <p>Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
@@ -253,7 +253,7 @@
                   <h4>Incidunt non veritatis illum ea ut nisi</h4>
                 </div>
                 <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
-              </div><!-- End Tab 2 Content -->
+              </div><!-- End Tab 2 Content 
 
               <div class="tab-pane fade show" id="tab3">
                 <p>Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
@@ -267,7 +267,7 @@
                   <h4>Incidunt non veritatis illum ea ut nisi</h4>
                 </div>
                 <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
-              </div><!-- End Tab 3 Content -->
+              </div><!-- End Tab 3 Content 
 
             </div>
 
@@ -277,9 +277,8 @@
             <img src="{% static 'assets/img/features-2.png' %}" class="img-fluid" alt="">
           </div>
 
-        </div><!-- End Feature Tabs -->
-
-        <!-- Feature Icons -->
+        </div><!-- End Feature Tabs 
+        <!-- Feature Icons -
         <div class="row feature-icons" data-aos="fade-up">
           <h3>Ratione mollitia eos ab laudantium rerum beatae quo</h3>
 
@@ -345,13 +344,13 @@
 
           </div>
 
-        </div><!-- End Feature Icons -->
+        </div><!-- End Feature Icons 
 
       </div>
 
-    </section><!-- End Features Section -->
+    </section><!-- End Features Section 
 
-    <!-- ======= Services Section ======= -->
+    <!-- ======= Services Section ======= 
     <section id="services" class="services">
 
       <div class="container" data-aos="fade-up">
@@ -421,9 +420,9 @@
 
       </div>
 
-    </section><!-- End Services Section -->
+    </section><!-- End Services Section 
 
-    <!-- ======= Pricing Section ======= -->
+    <!-- ======= Pricing Section ======= 
     <section id="pricing" class="pricing">
 
       <div class="container" data-aos="fade-up">
@@ -504,9 +503,9 @@
 
       </div>
 
-    </section><!-- End Pricing Section -->
+    </section><!-- End Pricing Section 
 
-    <!-- ======= F.A.Q Section ======= -->
+    <!-- ======= F.A.Q Section ======= 
     <section id="faq" class="faq">
 
       <div class="container" data-aos="fade-up">
@@ -518,7 +517,7 @@
 
         <div class="row">
           <div class="col-lg-6">
-            <!-- F.A.Q List 1-->
+            <!-- F.A.Q List 1
             <div class="accordion accordion-flush" id="faqlist1">
               <div class="accordion-item">
                 <h2 class="accordion-header">
@@ -564,7 +563,7 @@
 
           <div class="col-lg-6">
 
-            <!-- F.A.Q List 2-->
+            <!-- F.A.Q List 2
             <div class="accordion accordion-flush" id="faqlist2">
 
               <div class="accordion-item">
@@ -613,9 +612,9 @@
 
       </div>
 
-    </section><!-- End F.A.Q Section -->
+    </section><!-- End F.A.Q Section 
 
-    <!-- ======= Portfolio Section ======= -->
+    <!-- ======= Portfolio Section ======= 
     <section id="portfolio" class="portfolio">
 
       <div class="container" data-aos="fade-up">
@@ -768,9 +767,9 @@
 
       </div>
 
-    </section><!-- End Portfolio Section -->
+    </section><!-- End Portfolio Section 
 
-    <!-- ======= Testimonials Section ======= -->
+    <!-- ======= Testimonials Section ======= 
     <section id="testimonials" class="testimonials">
 
       <div class="container" data-aos="fade-up">
@@ -797,7 +796,7 @@
                   <h4>Ceo &amp; Founder</h4>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
+            </div><!-- End testimonial item 
 
             <div class="swiper-slide">
               <div class="testimonial-item">
@@ -813,7 +812,7 @@
                   <h4>Designer</h4>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
+            </div><!-- End testimonial item 
 
             <div class="swiper-slide">
               <div class="testimonial-item">
@@ -829,7 +828,7 @@
                   <h4>Store Owner</h4>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
+            </div><!-- End testimonial item 
 
             <div class="swiper-slide">
               <div class="testimonial-item">
@@ -845,7 +844,7 @@
                   <h4>Freelancer</h4>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
+            </div><!-- End testimonial item 
 
             <div class="swiper-slide">
               <div class="testimonial-item">
@@ -861,7 +860,7 @@
                   <h4>Entrepreneur</h4>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
+            </div><!-- End testimonial item 
 
           </div>
           <div class="swiper-pagination"></div>
@@ -869,9 +868,9 @@
 
       </div>
 
-    </section><!-- End Testimonials Section -->
+    </section><!-- End Testimonials Section 
 
-    <!-- ======= Team Section ======= -->
+    <!-- ======= Team Section ======= 
     <section id="team" class="team">
 
       <div class="container" data-aos="fade-up">
@@ -963,9 +962,9 @@
 
       </div>
 
-    </section><!-- End Team Section -->
+    </section><!-- End Team Section 
 
-    <!-- ======= Clients Section ======= -->
+    <!-- ======= Clients Section ======= 
     <section id="clients" class="clients">
 
       <div class="container" data-aos="fade-up">
@@ -990,11 +989,10 @@
         </div>
       </div>
 
-    </section><!-- End Clients Section -->
 
  
 
-    <!-- ======= Contact Section ======= -->
+    <!-- ======= Contact Section ======= 
     <section id="contact" class="contact">
 
       <div class="container" data-aos="fade-up">
@@ -1078,8 +1076,8 @@
 
       </div>
 
-    </section><!-- End Contact Section -->
+    </section> End Contact Section -->
 
-  </main><!-- End #main -->
+  </main><!-- End #main --> 
 
 {% endblock %}

@@ -11,7 +11,14 @@ import io
 from fuzzywuzzy import fuzz, process
 from django.http import JsonResponse
 import tempfile
+from .forms import UploadFileForm
+from io import StringIO
+from django.views import View
+from django.contrib import messages
+
 # Create your views here.
+
+openai.api_key = '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'
 
 def index(request):
 	return render(request,'main/index.html')
@@ -22,7 +29,7 @@ def ai(request):
         url = request.POST['url']
         # Call OpenAI API to generate the product description using the URL
         # Replace YOUR_OPENAI_API_KEY with your actual OpenAI API key
-        openai.api_key = ''
+        openai.api_key = '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'
         response = openai.Completion.create(
             engine='text-davinci-003',
             prompt=f"Generate a product description for the URL: {url}.",
@@ -223,3 +230,90 @@ def redirect_builder_view(request):
             return response
     return render(request, 'main/redirect-builder.html')
 
+
+def generate_product_subtitle_and_description(title, description):
+    prompt = f"""
+            You are a copywriter for LookFantastic. 
+            Subtitles should be:
+                A concise summary of the product – what it is and what it does
+                16 words or less
+                Doesn’t include the product name or brand name
+                Example: A rich cleansing balm that melts away makeup to reveal soft, radiant-looking skin.
+                Example: A lightweight daily sunscreen with SPF50+, suitable for sensitive skin types.
+            Product Descriptions should be:
+                50-100 words
+                2-3 paragraphs
+                What the product is, USPs, key ingredients and their benefits, summary
+
+            You are capable of:
+            Explaining and de-coding beauty jargon / ingredient benefits and
+            technologies.
+            Being clear and concise with an authoritative tone.
+            Ensuring you avoid the use of humour and chatty/conversational tone. Maintain
+            a professional tone.
+            Accurate key ingredient research, highlighting benefits in a
+            way that's easy to understand.
+            Factual and informative language, rather than trying to over sell a product through excessive adjectives.
+            And avoid terms such as heal, Repair, Treat, Irritation, Inflammation, Reduces Stress, Collagen Production, Acne
+            Eczema, Youth-generating, Age-defying, Prevents premature ageing.
+             
+            When given a title and description of a product you are able to produce a new subtitle and description
+            based on the above rules.
+            Generate a new subtitle and description for the following product.
+            Product Name: {title}\n Product Description: {description}\n"""
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=256,
+        n=1,
+        stop=None,
+        temperature=0.6,
+    )
+    generated_text = response.choices[0].text.strip()
+    if "\n" in generated_text:
+        subtitle, generated_description = generated_text.split("\n", 1)
+    else:
+        subtitle = generated_text
+        generated_description = "No description generated."
+
+    return subtitle, generated_description
+
+class ProductDescUpload(View):
+    def get(self, request):
+        form = UploadFileForm()
+        return render(request, 'main/product-descriptions.html', {'form': form})
+
+    def post(self, request):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            messages.info(request, "Your file has been uploaded and is being processed. This may take a few minutes. Please do not refresh the page.")
+            # Read input CSV and generate new subtitle and description
+            file = request.FILES['file']
+            decoded_file = file.read().decode('cp1252').splitlines()
+            reader = csv.DictReader(decoded_file)
+            rows = list(reader)
+            fieldnames = reader.fieldnames + ["new_subtitle", "new_description"]
+
+            # Prepare the output CSV
+            outfile = StringIO()
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for row in rows:
+                product_title = row["product title"]
+                product_description = row["product description"]
+                new_subtitle, new_description = generate_product_subtitle_and_description(product_title, product_description)
+                row["new_subtitle"] = new_subtitle
+                row["new_description"] = new_description
+                writer.writerow(row)
+
+            # Create the HttpResponse object with the appropriate CSV header.
+            response = HttpResponse(outfile.getvalue(), content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="output.csv"'
+
+            return response
+        else:
+            return HttpResponseBadRequest('Invalid form')
+
+    
